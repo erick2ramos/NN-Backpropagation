@@ -2,13 +2,6 @@ clear all
 
 global inp ;
 inp = dlmread("../datos/datos_P1_2_SD2014_n500.txt") ;
-for i=1:length(inp)
-    if inp(i,3) == -1
-        inp(i,3) = 0;
-    else
-        inp(i,3) = 1;
-    endif
-endfor
 
 [a, w] = makenet([2, 8, 2]) ;
 #load("weights.oct","w");
@@ -51,6 +44,13 @@ while ! trained
     invec = TrPerm(n,1:2) ;
     target = TrPerm(n,3) ;
     a = forwardprop(invec, a, w) ;
+    if target == -1
+        a{length(a)}(1) = 1 - a{length(a)}(1);
+        a{length(a)}(2) = 0 - a{length(a)}(2);
+    else
+        a{length(a)}(1) = 0 - a{length(a)}(1);
+        a{length(a)}(2) = 1 - a{length(a)}(2);
+    endif
     w = backprop(target, a, w) ;
   endfor
   
@@ -64,6 +64,13 @@ while ! trained
     invec = validset(n,1:2) ;
     target = validset(n,3) ;
     output = feedforward(invec, w);
+    if target == -1
+        output(1) = 1 - output(1);
+        output(2) = 0 - output(2);
+    else
+        output(1) = 0 - output(1);
+        output(2) = 1 - output(2);
+    endif
     OutputPerEpoch = [OutputPerEpoch; output(1) output(2)];
     if output(1) < output(2)
         OutputErrOut = [OutputErrOut; output(1)];
@@ -80,8 +87,13 @@ while ! trained
             Btype = [Btype; validset(n,1:2)];
         endif
     endif
-
-    newerror = max((target - (output)).^2) ;
+    
+    bias = [1; 0];
+    if target == -1
+        bias = [0; 1];
+    endif
+    
+    newerror = max((target - (output - bias)).^2) ;
     maxerrors(itr) = max([newerror, maxerrors(itr)]) ;
     if newerror >= epsilon
       nerrors(itr) += 1 ;
