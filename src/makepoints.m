@@ -5,7 +5,7 @@ function [Test, Train] = makepoints(nsize)
     Test(:,2) = 20.*rand(n,1);
     for i=1:n
         if sqrt((Test(i,1)-10)^2 + (Test(i,2)-10)^2) < 7
-            Test(i,3) = 0;
+            Test(i,3) = -1;
         else
             Test(i,3) = 1;
         endif
@@ -17,7 +17,7 @@ function [Test, Train] = makepoints(nsize)
     Train(:,2) = 20.*rand(n,1);
     for i=1:n
         if sqrt((Train(i,1)-10)^2 + (Train(i,2)-10)^2) < 7
-            Train(i,3) = 0;
+            Train(i,3) = -1;
         else
             Train(i,3) = 1;
         endif
