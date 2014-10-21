@@ -3,7 +3,7 @@ clear all
 global inp ;
 inp = dlmread("../datos/datos_P1_2_SD2014_n500.txt") ;
 
-[a, w] = makenet([2, 8, 2]) ;
+[a, w] = makenet([2, 2, 2]) ;
 #load("weights.oct","w");
 maxiter = 1000 ;
 itr = 0 ;
@@ -140,16 +140,21 @@ endif
 legend({'','Out','In','Error'},'location','east');
 hold off;
 
-figure(4);
-plot(OutputErrOut,'ro');
-hold on;
-plot(OutputErrIn,'g+');
-hold off;
+if length(OutputErrOut) > 0
+    figure(4);
+    plot(OutputErrOut,'ro');
+    hold on;
+endif
+if length(OutputErrIn) > 0
+    plot(OutputErrIn,'g+');
+    hold off;
+endif
 
 figure(5);
-plot(OutputPerEpoch(:,1),"b*");
-hold on;
-plot(OutputPerEpoch(:,2),"g*");
+for i=1:size(OutputPerEpoch)(2)
+    plot(OutputPerEpoch(:,i),"*");
+    hold on;
+endfor
 hold off;
 
 save('-binary', 'weights.oct', 'w')
