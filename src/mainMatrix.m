@@ -2,15 +2,15 @@ maxEpochs = 3000;
 n_hidden = 10;
 learning_rate = 0.01;
 
-#inp = dlmread('../datos/datos_P1_2_SD2014_n500.txt');
-[ inp, tnp ] = makepoints(500);
+inp = dlmread('../datos/datos_P1_2_SD2014_n500.txt');
+#[ inp, tnp ] = makepoints(500);
 warning('off');
 
 # Preparando datos
 inputs = inp(:,1:2);
 targets = inp(:,3);
 
-grid = linspace(0, 20, 40)';
+grid = linspace(0, 20, 100)';
 validset = zeros(length(grid)^2,3);
 for i = 1:length(grid)
     x_g_in = grid(i);
@@ -55,7 +55,7 @@ for epoch = 1:maxEpochs
         [ w_i_h, w_h_o ] = backpropagation(learning_rate, t_input, activations, errors, w_i_h, w_h_o);
     endfor
 
-    #Validacion con la grilla de puntos
+    #Validacion
     predictions = w_h_o * activate(validin * w_i_h)';
     error = predictions' - validout;
     err(epoch) = (sum(error.^2))^0.5;
